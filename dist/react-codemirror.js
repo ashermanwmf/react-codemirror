@@ -13351,6 +13351,7 @@ var CodeMirror = createReactClass({
 		defaultValue: PropTypes.string,
 		name: PropTypes.string,
 		onChange: PropTypes.func,
+		onChanges: PropTypes.func,
 		onCursorActivity: PropTypes.func,
 		onFocusChange: PropTypes.func,
 		onScroll: PropTypes.func,
@@ -13382,6 +13383,7 @@ var CodeMirror = createReactClass({
 		var codeMirrorInstance = this.getCodeMirrorInstance();
 		this.codeMirror = codeMirrorInstance.fromTextArea(this.textareaNode, this.props.options);
 		this.codeMirror.on('change', this.codemirrorValueChanged);
+		this.codeMirror.on('changes', this.codemirrorValueChanges);
 		this.codeMirror.on('cursorActivity', this.cursorActivity);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
@@ -13441,6 +13443,11 @@ var CodeMirror = createReactClass({
 	codemirrorValueChanged: function codemirrorValueChanged(doc, change) {
 		if (this.props.onChange && change.origin !== 'setValue') {
 			this.props.onChange(doc.getValue(), change);
+		}
+	},
+	codemirrorValueChanges: function codemirrorValueChanged(doc, change) {
+		if (this.props.onChanges && change.origin !== 'setValue') {
+			this.props.onChanges(doc.getValue(), change);
 		}
 	},
 	render: function render() {
