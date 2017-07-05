@@ -19,6 +19,7 @@ const CodeMirror = createReactClass({
 		defaultValue: PropTypes.string,
 		name: PropTypes.string,
 		onChange: PropTypes.func,
+		onChanges: PropTypes.func,
 		onCursorActivity: PropTypes.func,
 		onFocusChange: PropTypes.func,
 		onScroll: PropTypes.func,
@@ -49,8 +50,8 @@ const CodeMirror = createReactClass({
 	componentDidMount () {
 		const codeMirrorInstance = this.getCodeMirrorInstance();
 		this.codeMirror = codeMirrorInstance.fromTextArea(this.textareaNode, this.props.options);
-		this.codeMirror.on('change', this.codemirrorValueChanged);
-		this.codeMirror.on('changes', this.codemirrorValueChanges);
+		this.codeMirror.on('change', this.codemirrorValueChanged.bind(this, 'onChange'));
+		this.codeMirror.on('changes', this.codemirrorValueChanged.bind(this, 'onChanges'));
 		this.codeMirror.on('cursorActivity', this.cursorActivity);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
@@ -107,14 +108,9 @@ const CodeMirror = createReactClass({
 	scrollChanged (cm) {
 		this.props.onScroll && this.props.onScroll(cm.getScrollInfo());
 	},
-	codemirrorValueChanged (doc, change) {
+	codemirrorValueChanged (onChangeProp, doc, change) {
 		if (this.props.onChange && change.origin !== 'setValue') {
-			this.props.onChange(doc.getValue(), change);
-		}
-	},
-	codemirrorValueChanges (doc, change) {
-		if (this.props.onChanges && change.origin !== 'setValue') {
-			this.props.onChanges(doc.getValue(), change);
+			this.props[onChangeProp](doc.getValue(), change);
 		}
 	},
 	render () {
