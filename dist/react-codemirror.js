@@ -13766,7 +13766,7 @@ var CodeMirror = createReactClass({
 		this.props.onScroll && this.props.onScroll(cm.getScrollInfo());
 	},
 	codemirrorValueChanged: function codemirrorValueChanged(onChangeProp, doc, change) {
-		if (this.props.onChange && change.origin !== 'setValue') {
+		if (this.props[onChangeProp] && change.origin !== 'setValue') {
 			this.props[onChangeProp](doc.getValue(), change);
 		}
 	},
